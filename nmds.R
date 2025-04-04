@@ -150,7 +150,12 @@ selected1 <- selected1 |>
   mutate(destiny = str_remove(destiny, "merg_")) |>
   pivot_wider(names_from = destiny, values_from = number) |>
   select(-c(lost, abandoned, coverage)) |> 
-  rename(coverage = log_coverage)
+  rename(coverage = log_coverage) |> 
+  mutate(section = ifelse(
+    section == "N", "Pool 1", ifelse(
+      section == "E", "Pool 2", "Pool 3"
+    )
+  ))
 
 
 # Was depth significant among the two species
