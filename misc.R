@@ -129,8 +129,8 @@ cov_means <- selected1 |>
   reframe(cov_mean = mean(coverage)) |> 
   mutate(
     section = if_else(
-      section == "E", "East", if_else(
-        section == "N", "North", "South"
+      section == "E", "Pool2", if_else(
+        section == "N", "Pool1", "Pool3"
       )
     ))
 
@@ -139,8 +139,8 @@ cov_means <- selected1 |>
 coverage |> 
   mutate(
     section = if_else(
-      section == "E", "East", if_else(
-        section == "N", "North", "South"
+      section == "E", "Pool2", if_else(
+        section == "N", "Pool1", "Pool3"
       )
     )) |> 
   ggplot() +
@@ -158,17 +158,19 @@ coverage |>
       color = section
     ),
     size = 3,
-    shape = 17
+    shape = 15
   ) +
   scale_color_brewer(
     palette = "Set1",
-    name = "Section"
+    name = "Section",
+    labels = c("Pool 1", "Pool 2", "Pool 3")
   ) +
   scale_y_continuous(
     limits = c(0,32000),
     breaks = c(5000, 10000, 15000, 20000, 25000, 30000),
     labels = comma
   ) +
+  scale_x_discrete(labels = c("Pool 1", "Pool 2", "Pool 3")) +
   theme_minimal() +
   theme(panel.grid.minor.y = element_blank()) +
   labs(
