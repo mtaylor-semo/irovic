@@ -153,6 +153,11 @@ selected1 <- selected1 |>
   rename(coverage = log_coverage)
 
 
+# Was depth significant among the two species
+# for boxes with nests
+t.test(depth ~ species, data = selected1)
+
+
 
 
 # NMDS, 2 axes, with plot.
