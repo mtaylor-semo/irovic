@@ -26,11 +26,12 @@ selected1 <- selected1 |>
 
 # Use water depth and width for all 30 boxes to
 # get a sense of the section
-wd <- aov(depth ~ section, data = water_depth)
+water_depth <- xx
+wd <- aov(mode ~ section, data = water_depth)
 summary(wd)
 water_depth |> 
   group_by(section) |> 
-  reframe(n = mean(depth))
+  reframe(n = mean(mode))
 
 wd_hsd <- TukeyHSD(wd)
 
@@ -47,12 +48,14 @@ wd_hsd_plot <- wd_hsd_tbl |>
   geom_segment(aes(x = conf.low, y = contrast, xend = conf.high)) +
   geom_point(aes(x = estimate, y = contrast), size = 2) +
   scale_x_continuous(limits = c(-2, 2), breaks = c(-2, -1, 0, 1, 2)) +
-  labs(x = "Differences in mean levels of sections", y = "Comparison") +
+  labs(x = "Differences in mean depth of pools", y = "Comparison") +
   theme_minimal() +
   theme(panel.grid = element_blank())
 
+wd_hsd_plot
+
 ggsave(
-  filename = "wd_hsd_plot.png",
+  filename = "hsd_wd_plot.png",
   # plot = "wd_hsd_plot",
   width = 1600,
   height = 900,
@@ -108,14 +111,15 @@ coverage_hsd_plot <- coverage_hsd_tbl |>
     breaks = c(-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6)
   ) +
   labs(
-    x = "Differences in mean levels of sections",
+    x = "Differences in mean coverage between between pools",
     y = "Comparison") +
   theme_minimal() +
   theme(panel.grid = element_blank())
 
+coverage_hsd_plot
 
 ggsave(
-  filename = "coverage_hsd_plot.png",
+  filename = "hsd_coverage_plot.png",
   plot = coverage_hsd_plot,
   width = 1600,
   height = 900,
