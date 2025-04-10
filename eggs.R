@@ -150,7 +150,7 @@ hatched_plot <- hatched_eggs |>
     width = 0.22,
     height = 0
   ) +
-  xlab("Duck Creek section") +
+  xlab(NULL) +
   ylab("Number of hatched eggs") +
   scale_x_discrete(labels = c("Pool 1", "Pool 2", "Pool 3")) +
   scale_color_brewer(
@@ -162,7 +162,9 @@ hatched_plot <- hatched_eggs |>
     labels = c("Hooded Merganser", "Wood Duck")
   ) +
   theme_minimal() +
-  theme(panel.grid.minor = element_blank())
+  theme(axis.text.x = element_text(size = 11)) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(text = element_text(family = "Linux Libertine O"))
 
 hatched_plot <- hatched_plot +
   geom_point(

@@ -55,7 +55,7 @@ dumped_plot <- dumped1 |>
   #    width = 0.20,
   #    height = 0) +
   scale_y_continuous(breaks = c(2, 4, 6, 8 , 10)) +
-  xlab("Duck Creek section") +
+  xlab(NULL) +
   ylab("Number of dumped eggs") +
   scale_color_brewer(
     palette = "Dark2",
@@ -66,17 +66,21 @@ dumped_plot <- dumped1 |>
   scale_shape_discrete(name = NULL,
                        labels = c("Hooded Merganser", "Wood Duck")) +
   theme_minimal() +
+  theme(text = element_text(family = "Linux Libertine O")) +
+  theme(axis.text.x = element_text(size = 11)) +
   theme(panel.grid.minor = element_blank())
 
 dumped_plot <- dumped_plot +
-geom_text(
-  data = dlabs,
-  aes(x = section, y = dumped_num, label = box),
-  nudge_x = 0.25,
-  color = "black",
-  show.legend = FALSE
-)
-  
+  geom_text(
+    data = dlabs,
+    aes(x = section, y = dumped_num, label = box),
+    nudge_x = 0.25,
+    color = "black",
+    show.legend = FALSE,
+    family = "Linux Libertine O",
+    size = 3
+  )
+
 
 dumped_plot
 

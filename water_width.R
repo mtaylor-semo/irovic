@@ -112,7 +112,8 @@ x |> group_by(section) |>
   scale_color_brewer(
     palette = "Set1",
     labels = c("Pool 1", "Pool 2", "Pool 3"),
-  )
+  )  +
+  theme(text = element_text(family = "Linux Libertine O"))
 
 ggsave(
   file = "water_width_plot.png",

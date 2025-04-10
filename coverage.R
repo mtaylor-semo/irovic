@@ -51,6 +51,7 @@ fred |>
     y = "Areal coverage (sq. m)"
   ) +
   theme_minimal() +
+  theme(text = element_text(family = "Linux Libertine O")) +
   coord_flip()
 
 

@@ -50,6 +50,7 @@ wd_hsd_plot <- wd_hsd_tbl |>
   scale_x_continuous(limits = c(-2, 2), breaks = c(-2, -1, 0, 1, 2)) +
   labs(x = "Differences in mean depth of pools", y = "Comparison") +
   theme_minimal() +
+  theme(text = element_text(family = "Linux Libertine O")) +
   theme(panel.grid = element_blank())
 
 wd_hsd_plot
@@ -114,6 +115,7 @@ coverage_hsd_plot <- coverage_hsd_tbl |>
     x = "Differences in mean coverage between between pools",
     y = "Comparison") +
   theme_minimal() +
+  theme(text = element_text(family = "Linux Libertine O")) +
   theme(panel.grid = element_blank())
 
 coverage_hsd_plot
@@ -166,7 +168,7 @@ coverage |>
   ) +
   scale_color_brewer(
     palette = "Set1",
-    name = "Section",
+    name = NULL,
     labels = c("Pool 1", "Pool 2", "Pool 3")
   ) +
   scale_y_continuous(
@@ -177,8 +179,10 @@ coverage |>
   scale_x_discrete(labels = c("Pool 1", "Pool 2", "Pool 3")) +
   theme_minimal() +
   theme(panel.grid.minor.y = element_blank()) +
+  theme(axis.text.x = element_text(size = 11)) +
+  theme(text = element_text(family = "Linux Libertine O")) +
   labs(
-    x = "Duck Creek section",
+    x = NULL,
     y = "Tree Coverage (m²)"
   )
 

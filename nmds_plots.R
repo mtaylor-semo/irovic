@@ -13,7 +13,8 @@ p1.2 <- ggplot(data = duck_scores, aes(x = NMDS1, y = NMDS2)) +
     aes(x = NMDS1, y = NMDS2, label = box_id),
     color = "gray50",
     size = 1.5,
-    hjust = -0.5
+    hjust = -0.5,
+    family = "Linux Libertine O"
   ) +
   geom_point(aes(colour = species, shape = species), size = 1.5) +
   scale_color_brewer(
@@ -40,7 +41,8 @@ p1.2 <- ggplot(data = duck_scores, aes(x = NMDS1, y = NMDS2)) +
     legend.text = element_text(size = 6, margin = margin(l = 0.1, unit = "pt")),
     legend.title = element_text(size = 6.5),
     legend.key.spacing.y = unit(-7, "pt"),
-    legend.position.inside = c(0.8, 0.95)
+    legend.position.inside = c(0.8, 0.95),
+    text = element_text(family = "Linux Libertine O")
   ) +
   coord_fixed(ratio = 0.75)
 
@@ -98,7 +100,8 @@ p1.2.2 <- p1.2 + geom_segment(
     aes(x = NMDS1, y = NMDS2, label = vars),
     size = 2,
     hjust = "outward",
-    vjust = "outward"
+    vjust = "outward",
+    family = "Linux Libertine O"
   )
 
 p1.2.2
@@ -129,7 +132,8 @@ p2.3 <- ggplot(data = duck_scores, aes(x = NMDS2, y = NMDS3)) +
     aes(x = NMDS2, y = NMDS3, label = box_id),
     color = "gray50",
     size = 1.5,
-    hjust = -0.5
+    hjust = -0.5,
+    family = "Linux Libertine O"
   ) +
   geom_point(aes(colour = species, shape = species), size = 1.5) +
   scale_color_brewer(
@@ -153,6 +157,7 @@ p2.3 <- ggplot(data = duck_scores, aes(x = NMDS2, y = NMDS3)) +
     panel.grid = element_blank(),
     axis.text = element_text(size = 5),
     axis.title = element_text(size = 5.5),
+    text = element_text(family = "Linux Libertine O"),
     legend.text = element_text(size = 6, margin = margin(l = 0.1, unit = "pt")),
     legend.title = element_text(size = 6.5),
     legend.key.spacing.y = unit(-7, "pt"),
@@ -177,7 +182,8 @@ p2.3 <- p2.3 + geom_segment(
     aes(x = NMDS2, y = NMDS3, label = vars),
     size = 2,
     hjust = "outward",
-    vjust = "outward"
+    vjust = "outward",
+    family = "Linux Libertine O"
   )
 
 p2.3
