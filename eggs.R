@@ -1,76 +1,19 @@
+# Plots for egg data. 
+# Run 01_read_data.R first
 library(tidyverse)
 library(janitor)
 
-eggs <- read_csv(
-  "data/egg_data.csv",
-  skip = 1,
-  na = "N/A",
-  col_names = c(
-    "entry",
-    "pool",
-    "box_id",
-    "attempt",
-    "first_observed",
-    "total_eggs",
-    "total_hatched",
-    "total_abandoned",
-    "total_lost",
-    "wood_total",
-    "wood_hatched",
-    "wood_abandoned",
-    "wood_lost",
-    "merg_total",
-    "merg_hatched",
-    "merg_abandoned",
-    "merg_lost"
-  )
-) |> 
-  mutate(
-    pool = if_else(
-      pool == "E", "Pool2", if_else(
-        pool == "N", "Pool1", "Pool3"
-      )
-    ))
 
-egg1 <-
+# Wrangle -----------------------------------------------------------------
+
+eggs_tmp <-
   eggs |>
   mutate(box = str_extract(box_id, "[0-9]+")) |>
   mutate(first_observed = as.Date(first_observed, "%d-%b")) |> 
   select(-entry) |>
-  relocate(box, .after = section) |> 
-  mutate(
-    section = if_else(
-      section == "E", "Pool2", if_else(
-        section == "N", "Pool1", "Pool3"
-      )
-    ))
-  
+  relocate(box, .after = pool)
 
-
-# dumped <- read_csv(
-#   "data/glm_data.csv",
-#   skip = 1,
-#   col_names = c(
-#     "box_id",
-#     "section",
-#     "attempt",
-#     "spp_code",
-#     "orig",
-#     "dump_nesting",
-#     "dumped_num",
-#     "hatched_num",
-#     "depth_mode",
-#     "width_mode",
-#     "coverage"
-#   )
-# )
-# 
-# dumped1 <- dumped |> 
-#   mutate(box = str_extract(box_id, "[0-9]+")) |> 
-#   relocate(box, .after = section) |> 
-#   select(-c("box_id", "dump_nesting", "depth_mode", "width_mode", "coverage"))
-
-x <- egg1 |>
+eggs_tmp <- eggs_tmp |>
   select(-c(total_eggs, total_abandoned, total_hatched, total_lost, box_id)) |>
   pivot_longer(
     cols = contains(c("wood", "merg")),
@@ -84,34 +27,21 @@ x <- egg1 |>
     values_to = "number"
   )
 
-# Plots -------------------------------------------------------------------
-
-# Simple plot of total eggs per section.
-# egg1 |>
-#   group_by(section) |>
-#   filter(total_eggs > 0) |> 
-#   ggplot(aes(color = section)) +
-#   geom_jitter(aes(x = section, y = total_eggs),
-#               width = 0.1,
-#               height = 0) +
-#   xlab("Duck Creek Section") +
-#   ylab("Total Eggs in Nest Box") +
-#   scale_color_brewer(palette = "Dark2") +
-#   theme_minimal()
-
-hatched_eggs <- x |> 
+# Need to filter a few instances individually to separate
+# them from similar data. Then put them back.
+hatched_eggs <- eggs_tmp |> 
   filter(outcome == "hatched" &
            number > 0)
 
-merg_abandoned <- x |> 
+merg_abandoned <- eggs_tmp |> 
   filter(box == 34 & species == "merg")
 
-wood_abandoned <- x |> 
-  filter(box %in% c(93, 4) & species == "wood" & section == "Pool2") |> 
+wood_abandoned <- eggs_tmp |> 
+  filter(box %in% c(93, 4) & species == "wood" & pool == "Pool2") |> 
   filter(!(box == 93 & attempt == 1))
 
 e22_wodu <- tibble(
-  section = "Pool2",
+  pool = "Pool2",
   box = "22",
   attempt = 2,
   first_observed = as_date("2024-06-02"),
@@ -130,31 +60,33 @@ e22_wodu <- tibble(
 #   number = 13
 # )
 
+# Final tibble for plotting
 hatched_eggs <- bind_rows(hatched_eggs, merg_abandoned, wood_abandoned, e22_wodu) |> 
   filter(outcome == "hatched") |> 
   mutate(number = ifelse(species == "merg" & box == 7, 11, number)) |> 
   filter(!(
     species == "wood" & 
       box == 7 &
-      section == "Pool3" &
+      pool == "Pool3" &
       attempt == 1))
 
+# Get the means for plotting
 mean_hatched <- hatched_eggs |> 
-  group_by(section, species) |> 
+  group_by(pool, species) |> 
   reframe(mean = mean(number))
 
 mean_hatched
 
-set.seed(42)
+
+# Plots -------------------------------------------------------------------
 
 hatched_plot <- hatched_eggs |>
-  group_by(section) |>
+  group_by(pool) |>
   ggplot(aes(shape = species, color = species)) +
-  geom_jitter(
-    aes(x = section, y = number),
+  geom_point(
+    aes(x = pool, y = number),
     size = 2,
-    width = 0.22,
-    height = 0
+    position = position_jitter(width = 0.22, height = 0, seed = 7) #7!
   ) +
   xlab(NULL) +
   ylab("Number of hatched eggs") +
@@ -176,7 +108,7 @@ hatched_plot <- hatched_plot +
   geom_point(
     data = mean_hatched,
     aes(
-      x = section,
+      x = pool,
       y = mean,
       color = species
     ),
@@ -198,6 +130,11 @@ ggsave(
   bg = "white"
 )
 
+
+# Not Used ----------------------------------------------------------------
+
+
+
 # Vector of weekly dates, beginning on earliest first_observed date
 # for use in next plot.
 egg_breaks <- seq(from = as.Date("2024-03-23"), to = as.Date("2024-06-08"),
@@ -208,7 +145,7 @@ egg1 |>
     aes(
       x = first_observed, 
       y = wood_hatched,
-      color = section),
+      color = pool),
     position = position_jitter(width = 0.5, height = 0),
     size = 2,
     shape = 19
@@ -217,7 +154,7 @@ egg1 |>
     aes(
       x = first_observed, 
       y = merg_hatched,
-      color = section),
+      color = pool),
     position = position_jitter(width = 0.5, height = 0),
     size = 2,
     shape = 15
