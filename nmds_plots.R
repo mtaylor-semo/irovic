@@ -212,7 +212,7 @@ trimmed_scores <- duck_scores |>
   mutate(box_id = replace(box_id, box_id == "E65", "P2")) |> 
   mutate(box_id = replace(box_id, box_id == "S34", "P3")) |> 
   mutate(box_id = replace(box_id, box_id == "N70", "P4")) |> 
-  select(-c(NMDS3, section, species)) |> 
+  select(-c(NMDS3, pool, species)) |> 
   slice(-2)
 
 # P2, P3, P1, P4
