@@ -2,6 +2,7 @@
 # Run 01_read_data.R first
 library(tidyverse)
 library(janitor)
+library(RColorBrewer)
 
 
 # Wrangle -----------------------------------------------------------------
@@ -71,11 +72,25 @@ hatched_eggs <- bind_rows(hatched_eggs, merg_abandoned, wood_abandoned, e22_wodu
       attempt == 1))
 
 # Get the means for plotting
+# Mean eggs hatched by species by pool
 mean_hatched <- hatched_eggs |> 
   group_by(pool, species) |> 
   reframe(mean = mean(number))
 
 mean_hatched
+
+
+# Analyses ----------------------------------------------------------------
+
+t.test(number ~ species, data = hatched_eggs, var.equal = TRUE)
+
+# Species by Pool interaction was significant.
+summary(aov(number ~ species * pool, data = hatched_eggs))
+
+eggs_by_species_aov <- aov(number ~ species * pool, data = hatched_eggs)
+
+# See below for interaction plot
+
 
 
 # Plots -------------------------------------------------------------------
@@ -131,6 +146,37 @@ ggsave(
 )
 
 
+# Interaction plots. First is base R.
+# Second is ggplot version.
+
+interaction.plot(
+  x.factor = hatched_eggs$pool,
+  trace.factor = hatched_eggs$species,
+  response = hatched_eggs$number,
+  ylab = "Mean number eggs hatched",
+  trace.label = "Species"
+)
+
+mean_hatched |> 
+  group_by(species) |> 
+  ggplot() +
+  geom_point(
+    aes(x = pool, y = mean, color = species),
+    size = 1) +
+  geom_line(aes(x = pool, y = mean, group = species, color = species)) +
+  scale_color_brewer(
+    palette = "Dark2", 
+    labels = c("Hooded Merganser", "Wood Duck")) +
+  scale_y_continuous(
+    breaks = c(2, 6, 10, 14)) +
+  labs(
+    x = NULL,
+    y = "Mean number hatched eggs",
+    color = "Species") +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank()) +
+  theme(text = element_text(family = "Linux Libertine O"))
+
 # Not Used ----------------------------------------------------------------
 
 
@@ -173,4 +219,5 @@ egg1 |>
     x = as.Date("2024-05-06"),
     y = 5,
     label = "Circles: Woody. Squares: Hoody.")
+
 
