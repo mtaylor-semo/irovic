@@ -9,9 +9,9 @@ hatched_eggs |>
 
 t.test(number ~ species, data = hatched_eggs, var.equal = TRUE)
 
-summary(aov(number ~ species * section, data = hatched_eggs))
+summary(aov(number ~ species * pool, data = hatched_eggs))
 
-aov(number ~ species * section, data = hatched_eggs)
+aov(number ~ species * pool, data = hatched_eggs)
 
 aov(species ~ coverage, data = merged1)
 
