@@ -7,7 +7,7 @@ eggs <- read_csv(
   na = "N/A",
   col_names = c(
     "entry",
-    "section",
+    "pool",
     "box_id",
     "attempt",
     "first_observed",
@@ -24,7 +24,13 @@ eggs <- read_csv(
     "merg_abandoned",
     "merg_lost"
   )
-)
+) |> 
+  mutate(
+    pool = if_else(
+      pool == "E", "Pool2", if_else(
+        pool == "N", "Pool1", "Pool3"
+      )
+    ))
 
 egg1 <-
   eggs |>
